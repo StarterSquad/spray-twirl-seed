@@ -60,7 +60,7 @@ object Dependencies {
 
   val db = Seq(
     "org.mongodb" %% "casbah" % "2.5.0",
-    "com.novus" %% "salat" % "1.9.2-SNAPSHOT"
+    "com.novus" %% "salat" % "1.9.4"
   )
 
   val security = Seq(
