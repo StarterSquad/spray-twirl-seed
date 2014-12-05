@@ -9,7 +9,6 @@ trait MySpecsTest extends Specs2RouteTest {
 
 class TwirlServiceSpecs extends Specification with MySpecsTest with TwirlService {
 
-
   "The twirl service " should {
     "return something from the root" in {
       Get() ~> twirlRoute ~> check {
@@ -17,6 +16,5 @@ class TwirlServiceSpecs extends Specification with MySpecsTest with TwirlService
       }
     }
   }
-
 
 }

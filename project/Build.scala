@@ -1,5 +1,4 @@
 import com.typesafe.sbt.SbtStartScript
-import scala._
 import sbt._
 import sbt.Keys._
 import spray.revolver.RevolverPlugin._
@@ -8,7 +7,7 @@ import twirl.sbt.TwirlPlugin._
 object BuildSettings {
   val buildOrganization = "com.ssq"
   val buildVersion = "0.1"
-  val buildScalaVersion = "2.11.2"
+  val buildScalaVersion = "2.11.4"
 
   val buildSettings = Defaults.defaultSettings ++ Seq(
     organization := buildOrganization,
@@ -16,7 +15,8 @@ object BuildSettings {
     scalaVersion := buildScalaVersion,
     scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-Xlint", "-Xfatal-warnings"),
     javaOptions += "-Xmx1G",
-    shellPrompt := ShellPrompt.buildShellPrompt
+    shellPrompt := ShellPrompt.buildShellPrompt,
+    updateOptions := updateOptions.value.withCachedResolution(cachedResoluton = true)
   )
 }
 

@@ -8,8 +8,6 @@ object Boot extends App with LazyLogging {
   try {
     implicit val system = ActorSystem()
 
-    import system.dispatcher
-
     val service = system.actorOf(Props(classOf[RestActor]), "rest-api")
 
     IO(Http) ! Http.Bind(service, interface = "0.0.0.0", port = 8080)

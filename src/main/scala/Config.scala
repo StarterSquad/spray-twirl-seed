@@ -1,5 +1,3 @@
-package com.mmoigo
-
 import com.typesafe.config.ConfigFactory
 
 object Config {
