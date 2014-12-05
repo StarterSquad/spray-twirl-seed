@@ -1,11 +1,18 @@
-import spray.can.server.SprayCanHttpServerApp
-import com.weiglewilczek.slf4s.Logging
+import akka.actor.ActorSystem
 import akka.actor.Props
+import akka.io.IO
+import spray.can.Http
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
-object Boot extends App with SprayCanHttpServerApp with Logging {
+object Boot extends App with LazyLogging {
   try {
-    val service = system.actorOf(Props(new RestActor()), "my-service")
-    newHttpServer(service) ! Bind("0.0.0.0", 8080)
+    implicit val system = ActorSystem()
+
+    import system.dispatcher
+
+    val service = system.actorOf(Props(classOf[RestActor]), "rest-api")
+
+    IO(Http) ! Http.Bind(service, interface = "0.0.0.0", port = 8080)
   } catch {
     case e: Throwable => logger.error("Error while booting", e)
   }

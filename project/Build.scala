@@ -6,15 +6,15 @@ import spray.revolver.RevolverPlugin._
 import twirl.sbt.TwirlPlugin._
 
 object BuildSettings {
-  val buildOrganization = "com.xebia"
+  val buildOrganization = "com.ssq"
   val buildVersion = "0.1"
-  val buildScalaVersion = "2.10.1"
+  val buildScalaVersion = "2.11.2"
 
   val buildSettings = Defaults.defaultSettings ++ Seq(
     organization := buildOrganization,
     version := buildVersion,
     scalaVersion := buildScalaVersion,
-    scalacOptions ++= Seq( "-unchecked", "-deprecation", "-encoding", "utf8"),
+    scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-Xlint", "-Xfatal-warnings"),
     javaOptions += "-Xmx1G",
     shellPrompt := ShellPrompt.buildShellPrompt
   )
@@ -31,15 +31,14 @@ object Resolvers {
 
 
 object Dependencies {
-  val sprayVersion = "1.1-M7"
-  val akkaVersion = "2.1.2"
+  val sprayVersion = "1.3.2"
+  val akkaVersion = "2.3.6"
 
   val spray = Seq(
-    "io.spray" % "spray-can" % sprayVersion,
-    "io.spray" % "spray-routing" % sprayVersion,
-    "io.spray" %% "spray-json" % "1.2.3",
-    "io.spray" % "spray-client" % sprayVersion,
-    "io.spray" % "spray-testkit" % sprayVersion
+    "io.spray" %% "spray-can" % sprayVersion,
+    "io.spray" %% "spray-routing" % sprayVersion,
+    "io.spray" %% "spray-client" % sprayVersion,
+    "io.spray" %% "spray-testkit" % sprayVersion % "test"
   )
 
   val akka = Seq(
@@ -48,30 +47,36 @@ object Dependencies {
   )
 
   val logging = Seq(
-    "ch.qos.logback" % "logback-classic" % "1.0.7",
-    "org.slf4j" % "slf4j-api" % "1.6.1",
-    "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7"
+    "ch.qos.logback" % "logback-classic" % "1.1.2",
+    "org.slf4j" % "slf4j-api" % "1.7.7",
+    "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2"
   )
 
   val testing = Seq(
-    "org.specs2" %% "specs2" % "1.12.3" % "test,it",
+    "org.specs2" %% "specs2" % "2.3.12" % "test,it",
+    "org.specs2" %% "specs2-mock" % "2.3.12" % "test,it",
+    "org.specs2" %% "specs2-matcher-extra" % "2.3.12" % "test,it",
     "org.mockito" % "mockito-core" % "1.9.5" % "test,it"
   )
 
-  val db = Seq(
-    "org.mongodb" %% "casbah" % "2.5.0",
-    "com.novus" %% "salat" % "1.9.4"
-  )
-
   val security = Seq(
-    "com.google.api-client" % "google-api-client" % "1.14.1-beta",
-    "com.google.http-client" % "google-http-client-jackson2" % "1.14.1-beta",
-    "com.google.apis" % "google-api-services-oauth2" % "v2-rev36-1.14.2-beta"
+    "org.mindrot" % "jbcrypt" % "0.3m"
   )
 
-  val dependencies = spray ++ akka ++ logging ++ testing ++ db
-}
+  val mail = Seq(
+    "org.apache.commons" % "commons-email" % "1.3.2",
+    "com.icegreen" % "greenmail" % "1.3.1b" % "test,it"
+  )
 
+  val others = Seq(
+    "com.gilt" % "handlebars_2.10" % "0.0.19-20131031112233" exclude("org.slf4j", "slf4j-simple"),
+    "commons-io" % "commons-io" % "2.4",
+    "commons-codec" % "commons-codec" % "1.9"
+  )
+
+
+  val dependencies = spray ++ akka ++ logging ++ testing ++ security ++ mail ++ others
+}
 /**
  * Revolver.settings: (https://github.com/spray/sbt-revolver) Allows for hot reloading when JRebel is configured.
  * Integration tests should end with 'IT'. Run it:test to run integration tests only.
@@ -83,8 +88,8 @@ object ThisBuild extends Build {
   import Resolvers._
   import Dependencies._
 
-  lazy val mmoigo = Project(
-    "your-project-name-goes-here", file("."),
+  lazy val ssqApi = Project(
+    "ssq-api", file("."),
     settings = buildSettings
       ++ Seq(resolvers := repositories, libraryDependencies ++= dependencies)
       ++ SbtStartScript.startScriptForClassesSettings
